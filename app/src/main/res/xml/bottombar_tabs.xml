@@ -1,0 +1,18 @@
+<tabs>
+
+    <tab
+        icon="@drawable/movie_open"
+        id="@+id/media"
+        title="Media" />
+
+    <tab
+        icon="@drawable/file_cabinet"
+        id="@+id/file"
+        title="File" />
+
+    <tab
+        icon="@drawable/stream"
+        id="@+id/stream"
+        title="Stream" />
+
+</tabs>
