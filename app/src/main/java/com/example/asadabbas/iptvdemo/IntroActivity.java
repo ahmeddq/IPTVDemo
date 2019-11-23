@@ -75,6 +75,8 @@ public class IntroActivity extends AppIntro {
         setVibrate(true);
         setVibrateIntensity(30);
         askForPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 3); // OR
+
+
     }
 
     @Override

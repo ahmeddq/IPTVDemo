@@ -63,7 +63,6 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
         String album = albumList.get(position);
 
         RequestOptions requestOptions = new RequestOptions();
-        requestOptions.placeholder(R.drawable.audio2);
         requestOptions.error(R.drawable.audio2);
 
         Glide.with(mContext).setDefaultRequestOptions(requestOptions).load(album).into(holder.thumbnail);

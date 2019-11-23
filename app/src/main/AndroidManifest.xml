@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.asadabbas.iptvdemo">
 
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.VIBRATE"></uses-permission>
 
@@ -22,6 +23,12 @@
         </activity>
         <activity android:name=".Player_Main" />
         <activity android:name=".Main2Activity"></activity>
+        <activity android:name=".Reproductor"></activity>
+
+        <activity
+            android:name="cat.ereza.customactivityoncrash.activity.DefaultErrorActivity"
+            android:theme="@style/AppTheme"
+            android:process=":error_activity" />
     </application>
 
 </manifest>
