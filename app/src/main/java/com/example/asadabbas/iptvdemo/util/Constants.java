@@ -1,4 +1,4 @@
-package com.example.asadabbas.iptvdemo;
+package com.example.asadabbas.iptvdemo.util;
 
 /**
  * Created by xavkh on 12/19/2017.
@@ -15,4 +15,5 @@ public class Constants {
     public static final int MASTERPLAYLIST = 0;
     public static final int PLAYLIST = 1;
     public static final int OTHER = 2;
+    public static long POSITION = 0;
 }

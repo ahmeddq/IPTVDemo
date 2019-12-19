@@ -14,5 +14,8 @@
         icon="@drawable/stream"
         id="@+id/stream"
         title="Stream" />
-
+    <tab
+        icon="@drawable/heart_black"
+        id="@+id/favourite"
+        title="Favourites" />
 </tabs>

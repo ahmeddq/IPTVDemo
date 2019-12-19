@@ -1,15 +1,26 @@
-package com.example.asadabbas.iptvdemo;
+package com.example.asadabbas.iptvdemo.activities;
 
 import android.Manifest;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.widget.Toast;
 
+import com.example.asadabbas.iptvdemo.R;
 import com.github.paolorotolo.appintro.AppIntro;
 import com.github.paolorotolo.appintro.AppIntroFragment;
 import com.github.paolorotolo.appintro.model.SliderPage;
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import rebus.permissionutils.PermissionEnum;
+import rebus.permissionutils.PermissionUtils;
 
 public class IntroActivity extends AppIntro {
 
@@ -74,25 +85,25 @@ public class IntroActivity extends AppIntro {
         // NOTE: you will probably need to ask VIBRATE permission in Manifest.
         setVibrate(true);
         setVibrateIntensity(30);
-        askForPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 3); // OR
-
+        askForPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 3); // OR
 
     }
 
     @Override
     public void onSkipPressed(Fragment currentFragment) {
         super.onSkipPressed(currentFragment);
-        // Do something when users tap on Skip button.
+
+        permissions();
+
     }
 
     @Override
     public void onDonePressed(Fragment currentFragment) {
         super.onDonePressed(currentFragment);
 
-        Intent intent = new Intent(this, Main2Activity.class);
+        Intent intent = new Intent(this, HomeActivity.class);
         startActivity(intent);
         finish();
-        // Do something when users tap on Done button.
     }
 
     @Override
@@ -100,5 +111,52 @@ public class IntroActivity extends AppIntro {
         super.onSlideChanged(oldFragment, newFragment);
         // Do something when the slide changes.
     }
+
+    PermissionListener permissionlistener = new PermissionListener() {
+        @Override
+        public void onPermissionGranted() {
+
+            try {
+                Intent intent = new Intent(IntroActivity.this, HomeActivity.class);
+                startActivity(intent);
+                finish();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void onPermissionDenied(List<String> deniedPermissions) {
+            Toast.makeText(IntroActivity.this, "Permission Denied\n" + deniedPermissions.toString(), Toast.LENGTH_SHORT).show();
+        }
+    };
+
+    void permissions() {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+            boolean readGranted = PermissionUtils.isGranted(this, PermissionEnum.READ_EXTERNAL_STORAGE);
+
+            if (!readGranted) {
+                TedPermission.with(this)
+                        .setPermissionListener(permissionlistener)
+                        .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
+                        .setPermissions(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE
+                        )
+                        .check();
+            } else {
+                Intent intent = new Intent(IntroActivity.this, HomeActivity.class);
+                startActivity(intent);
+                finish();
+
+            }
+        } else {
+            Intent intent = new Intent(IntroActivity.this, HomeActivity.class);
+            startActivity(intent);
+            finish();
+        }
+    }
+
 
 }

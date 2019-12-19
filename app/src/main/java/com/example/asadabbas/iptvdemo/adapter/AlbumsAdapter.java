@@ -1,50 +1,58 @@
 package com.example.asadabbas.iptvdemo.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
-import android.support.v7.widget.PopupMenu;
+import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.activeandroid.query.Delete;
+import com.activeandroid.query.Select;
+import com.activeandroid.query.Update;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.example.asadabbas.iptvdemo.Player_Main;
+import com.example.asadabbas.iptvdemo.activities.MediaPlayer;
 import com.example.asadabbas.iptvdemo.R;
+import com.example.asadabbas.iptvdemo.model.Favourites;
+import com.example.asadabbas.iptvdemo.model.IPTV;
+import com.example.asadabbas.iptvdemo.util.TinyDB;
 
 import java.util.ArrayList;
-import java.util.List;
+
+import static com.example.asadabbas.iptvdemo.util.Constants.POSITION;
 
 /**
  * Created by Rajat Gupta on 18/05/16.
  */
 public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHolder> {
 
-    private Context mContext;
+    private Activity mContext;
     private ArrayList<String> albumList;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView title, count;
-        public ImageView thumbnail, overflow, share, play;
+        public TextView title, timeTxt, name;
+        public ImageView thumbnail, share, play, favourite;
 
         public MyViewHolder(View view) {
             super(view);
             share = view.findViewById(R.id.share);
             play = view.findViewById(R.id.play);
             thumbnail = (ImageView) view.findViewById(R.id.thumbnail);
-            //overflow = (ImageView) view.findViewById(R.id.overflow);
+            favourite = (ImageView) view.findViewById(R.id.favourite);
+            timeTxt = (TextView) view.findViewById(R.id.timeTxt);
+            name = (TextView) view.findViewById(R.id.name);
         }
     }
 
-
-    public AlbumsAdapter(Context mContext, ArrayList<String> albumList) {
+    public AlbumsAdapter(Activity mContext, ArrayList<String> albumList) {
         this.mContext = mContext;
         this.albumList = albumList;
     }
@@ -64,6 +72,31 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
 
         RequestOptions requestOptions = new RequestOptions();
         requestOptions.error(R.drawable.audio2);
+
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                String duration = getDuration(album);
+                boolean isFav = isFavourite(album);
+                // String fileName = getfileName(album);
+                mContext.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!TextUtils.isEmpty(duration) && duration != null) {
+
+                            holder.timeTxt.setText(duration);
+
+                            if (isFav) {
+                                holder.favourite.setImageDrawable(mContext.getDrawable(R.drawable.ic_favorites));
+                            } else {
+                                holder.favourite.setImageDrawable(mContext.getDrawable(R.drawable.heart_outline_black));
+                            }
+                            //    holder.name.setText(fileName);
+                        }
+                    }
+                });
+            }
+        });
 
         Glide.with(mContext).setDefaultRequestOptions(requestOptions).load(album).into(holder.thumbnail);
 
@@ -89,66 +122,95 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
                     public void onClick(View v) {
 
                         String uriPath = albumList.get(position);
-                        Intent shareIntent = new Intent(mContext, Player_Main.class);
+                        Intent shareIntent = new Intent(mContext, MediaPlayer.class);
                         shareIntent.putExtra("uri", uriPath);
+                        new TinyDB(mContext).putBoolean("isFullScreen",false);
+                        POSITION =0;
                         mContext.startActivity(shareIntent);
 
                     }
                 }
         );
 
-      /*  // loading album cover using Glide library
 
-
-
-
-
-        holder.overflow.setOnClickListener(new View.OnClickListener() {
+        holder.favourite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showPopupMenu(holder.overflow);
-                Toast.makeText(this, "Thank you for trying this app, Find out more...", Toast.LENGTH_SHORT).show();
+
+                if (isFavourite(album)) {
+                    unFavourite(album);
+                } else {
+                    favourite(album);
+                }
+
+                boolean isFav = isFavourite(album);
+
+                if (isFav) {
+                    holder.favourite.setImageDrawable(mContext.getDrawable(R.drawable.ic_favorites));
+                } else {
+                    holder.favourite.setImageDrawable(mContext.getDrawable(R.drawable.heart_outline_black));
+                }
             }
-        });*/
+        });
+
     }
 
-    /**
-     * Showing popup menu when tapping on 3 dots
-     */
-   /* private void showPopupMenu(View view) {
-        // inflate menu
-        PopupMenu popup = new PopupMenu(mContext, view);
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.menu_album, popup.getMenu());
-        popup.setOnMenuItemClickListener(new MyMenuItemClickListener());
-        popup.show();
-        Glide.with(mContext).load(album.getThumbnail()).into(holder.thumbnail);
-    }*/
-
-    /**
-     * Click listener for popup menu items
-     */
-/*    class MyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
-
-        public MyMenuItemClickListener() {
-        }
-
-        @Override
-        public boolean onMenuItemClick(MenuItem menuItem) {
-            switch (menuItem.getItemId()) {
-                case R.id.action_add_favourite:
-                    Toast.makeText(mContext, "Add to favourite", Toast.LENGTH_SHORT).show();
-                    return true;
-                case R.id.action_play_next:
-                    Toast.makeText(mContext, "Play next", Toast.LENGTH_SHORT).show();
-                    return true;
-                default:
-            }
-            return false;
-        }
-    }*/
     @Override
     public int getItemCount() {
         return albumList.size();
     }
+
+    String getDuration(String uriOfFile) {
+
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        retriever.setDataSource(uriOfFile);
+        long duration = Long.parseLong(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
+
+        int seconds = (int) (duration / 1000) % 60;
+        int minutes = (int) ((duration / (1000 * 60)) % 60);
+        int hours = (int) ((duration / (1000 * 60 * 60)) % 24);
+
+
+        String timeDuration = String.format("%02d:%02d:%02d", hours, minutes, seconds);
+        retriever.release();
+
+        return timeDuration;
+
+    }
+
+    String getfileName(String str) {
+
+        String filename = str.substring(str.lastIndexOf("/") + 1);
+
+        return filename;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
+    boolean isFavourite(String str) {
+
+        boolean fav = false;
+
+        Favourites isFav = new Select().from(Favourites.class).where("Path=?", str).executeSingle();
+
+        if (isFav != null)
+            fav = isFav.isFav();
+
+        return fav;
+    }
+
+    void unFavourite(String str) {
+        new Delete().from(Favourites.class).where("Path=?", str).execute();
+    }
+
+    void favourite(String album) {
+        Favourites favourites = new Favourites();
+        favourites.setFav(true);
+        favourites.setPath(album);
+        favourites.save();
+    }
+
 }

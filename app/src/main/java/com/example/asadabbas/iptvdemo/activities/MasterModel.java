@@ -1,4 +1,4 @@
-package com.example.asadabbas.iptvdemo;
+package com.example.asadabbas.iptvdemo.activities;
 
 import java.net.MalformedURLException;
 import java.net.URL;

@@ -3,14 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".activities.MediaPlayer">
 
     <com.google.android.exoplayer2.ui.SimpleExoPlayerView
         android:id="@+id/player_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:focusable="true"
-        app:shutter_background_color="@android:color/transparent" />
+        android:background="@color/black"
+        android:clickable="true"
+        android:focusable="true" />
 
     <ImageView
         android:id="@+id/audio_place"
@@ -18,5 +20,101 @@
         android:layout_height="wrap_content"
         android:src="@drawable/audio3"
         android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/settings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="95dp"
+        android:layout_marginRight="15dp"
+        android:layout_toLeftOf="@+id/lock"
+        android:src="@drawable/settings" />
+
+    <ImageView
+        android:id="@+id/lock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="95dp"
+        android:layout_marginRight="15dp"
+        android:layout_toLeftOf="@+id/favourite"
+        android:src="@drawable/screen_rotation_lock" />
+
+    <ImageView
+        android:id="@+id/favourite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="95dp"
+        android:layout_marginRight="15dp"
+        android:layout_toLeftOf="@+id/fullscreen"
+        android:src="@drawable/heart_outline" />
+
+    <ImageView
+        android:id="@+id/fullscreen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="95dp"
+        android:layout_marginRight="15dp"
+        android:src="@drawable/arrow_expand_all" />
+
+    <ImageView
+        android:id="@+id/rotateScreen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:onClick="RotateScreen"
+        android:src="@drawable/screen_rotation" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/fullscreen"
+        android:layout_below="@+id/rotateScreen"
+        android:onClick="TouchScreen">
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/brightness_linear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
+        android:background="@android:color/white"
+        android:padding="5dp">
+
+        <com.verticalseekbar.VerticalSeekBar
+            android:id="@+id/brightness"
+            android:layout_width="25dp"
+            android:layout_height="200dp"
+            android:progressDrawable="@drawable/seek_bar"
+            android:splitTrack="false"
+            android:thumb="@android:color/transparent"
+            app:customThumb="@drawable/white_balance_sunny" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/volume_linear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dp"
+        android:background="@android:color/white"
+        android:padding="5dp">
+
+        <com.verticalseekbar.VerticalSeekBar
+            android:id="@+id/volume"
+            android:layout_width="25dp"
+            android:layout_height="200dp"
+            android:progressDrawable="@drawable/seek_bar"
+            android:splitTrack="false"
+            android:thumb="@android:color/transparent"
+            app:customThumb="@drawable/volume_high" />
+    </LinearLayout>
 
 </RelativeLayout>
